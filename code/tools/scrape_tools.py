@@ -1,3 +1,6 @@
+url_list_of_lists = 'http://en.wikipedia.org/wiki/List_of_Billboard_Hot_100_top-ten_singles'
+wiki_base_url = 'http://en.wikipedia.org'
+
 def gen_id(wiki_url):
     ''' Generate an 8-digit id (int) for based on the unique wikipedia url'''
     return hash(wiki_url) % 10**8
