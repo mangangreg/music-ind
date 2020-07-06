@@ -80,3 +80,29 @@ def pull_info(sp_url, out=True, write_path=dir):
 
     except IndexError:
         print(sp_url)
+
+
+def pull_all_songs(year=None):
+    song_idx = [x.stem for x in(paths.DATA/'songs').glob('*')]
+    n_years = len(list((paths.DATA/'wiki-top-10/').glob('*')))
+
+
+    if year:
+        df = pd.read_csv(paths.DATA/"wiki-top-10"/f"{year}.csv", usecols=['single_url'])
+        for j, sp_url in df[df.single_url.notna()].single_url.iteritems():
+            if st.gen_id(sp_url) not in song_idx:
+                pull_info(sp_url)
+                print(f"Pulling for {sp_url} (id:{st.gen_id(sp_url)})")
+    else:
+        for year_csv in tqdm((paths.DATA/'wiki-top-10/').iterdir(), total=n_years ):
+            df = pd.read_csv(year_csv, usecols=['single_url'])
+            for j, sp_url in df[df.single_url.notna()].single_url.iteritems():
+                if st.gen_id(sp_url) not in song_idx:
+                    pull_info(sp_url)
+@click.command()
+@click.option("--year", "-y", default=None, help="Year to pull")
+def main(year):
+    pull_all_songs(year)
+
+if __name__ == '__main__':
+    main()
