@@ -84,7 +84,7 @@ def pull_info(sp_url, out=True, write_path=dir):
 
 
 def pull_all_songs(year=None):
-    song_idx = [x.stem for x in(paths.DATA/'songs').glob('*')]
+    song_idx = [x.stem for x in(paths.SONGS).glob('*')]
     n_years = len(list(x for x in (paths.TOP10).glob('*') if x.is_dir()))
 
     if year:

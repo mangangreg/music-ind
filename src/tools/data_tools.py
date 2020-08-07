@@ -1,6 +1,6 @@
 import sys
 import json
-from pathlib import Path 
+from pathlib import Path
 
 import pandas as pd
 
@@ -17,7 +17,7 @@ def load_charts(year):
 
 def load_single(single_url):
     id = st.gen_id(single_url)
-    fpath = paths.DATA/'songs'/f"{id}.json"
+    fpath = paths.SONGS/f"{id}.json"
 
     if not fpath.exists():
         raise ValueError('File does not exist for this song')
