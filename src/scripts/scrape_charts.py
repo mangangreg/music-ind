@@ -1,6 +1,7 @@
 import sys
 import requests
 import json
+from pathlib import Path
 
 import click
 import pandas as pd
@@ -8,9 +9,9 @@ from tqdm import tqdm
 tqdm.pandas()
 from bs4 import BeautifulSoup
 
-sys.path.append('..')
-from tools import scrape_tools as st
-from tools import paths
+sys.path.append('../..')
+from src.tools import scrape_tools as st
+from src.tools import paths
 
 def get_year_links():
     # Get the list of "Top 10 Singles by Year" page from wikipedia

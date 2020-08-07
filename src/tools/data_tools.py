@@ -1,10 +1,13 @@
 import sys
 import json
+from pathlib import Path 
+
 import pandas as pd
 
-sys.path.append('..')
-from tools import paths
-from tools import scrape_tools as st
+root = '../..' if Path(__file__).resolve().parent == Path.cwd() else '.'
+sys.path.append(root)
+from src.tools import paths
+from src.tools import scrape_tools as st
 
 def load_charts(year):
     '''Load charts for a given year'''

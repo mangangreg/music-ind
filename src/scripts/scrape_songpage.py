@@ -2,6 +2,7 @@ import re
 import sys
 import json
 import requests
+import pdb
 
 import click
 import pandas as pd
@@ -9,9 +10,9 @@ from tqdm import tqdm
 tqdm.pandas()
 from bs4 import BeautifulSoup
 
-sys.path.append('..')
-from tools import scrape_tools as st
-from tools import paths
+sys.path.append('../..')
+from src.tools import scrape_tools as st
+from src.tools import paths
 
 dir = paths.DATA/'songs'
 
@@ -45,7 +46,7 @@ def pull_info(sp_url, out=True, write_path=dir):
                 if th.text.startswith('Single by'):
                     links = row.find_all('a')
                     if len(links)==1:
-                        song_data.update({'artist':row.text.split('Single by ')[1], 'url':None})
+                        song_data.update({'name':row.text.split('Single by ')[1], 'url':None})
                     else:
                         song_data['artists'] =[{'artist':artist.text,
                                                 'url':artist.attrs['href'],
@@ -66,11 +67,11 @@ def pull_info(sp_url, out=True, write_path=dir):
 
                 # Songwriters
                 elif th.text.startswith('Songwriter'):
-                    song_data['songwriters'] = st.get_hyper_list(row.find('td'), soup)
+                    song_data['songwriters'] = st.extract_list(row.find('td'), soup)
 
                 # Producers
                 elif th.text.startswith('Producer'):
-                    song_data['producers'] = st.get_hyper_list(row.find('td'), soup)
+                    song_data['producers'] = st.extract_list(row.find('td'), soup)
 
         if out:
             with open(write_path/f'{song_id}.json', 'w') as wfile:
@@ -84,17 +85,16 @@ def pull_info(sp_url, out=True, write_path=dir):
 
 def pull_all_songs(year=None):
     song_idx = [x.stem for x in(paths.DATA/'songs').glob('*')]
-    n_years = len(list((paths.DATA/'wiki-top-10/').glob('*')))
-
+    n_years = len(list(x for x in (paths.TOP10).glob('*') if x.is_dir()))
 
     if year:
-        df = pd.read_csv(paths.DATA/"wiki-top-10"/f"{year}.csv", usecols=['single_url'])
+        df = pd.read_csv(paths.TOP10/f"{year}.csv", usecols=['single_url'])
         for j, sp_url in df[df.single_url.notna()].single_url.iteritems():
             if st.gen_id(sp_url) not in song_idx:
                 pull_info(sp_url)
-                print(f"Pulling for {sp_url} (id:{st.gen_id(sp_url)})")
+                print(f"Downloadingn {sp_url} (id:{st.gen_id(sp_url)})")
     else:
-        for year_csv in tqdm((paths.DATA/'wiki-top-10/').iterdir(), total=n_years ):
+        for year_csv in tqdm((paths.TOP10).iterdir(), total=n_years ):
             df = pd.read_csv(year_csv, usecols=['single_url'])
             for j, sp_url in df[df.single_url.notna()].single_url.iteritems():
                 if st.gen_id(sp_url) not in song_idx:
