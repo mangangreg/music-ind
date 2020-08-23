@@ -14,9 +14,9 @@ sys.path.append('../..')
 from src.tools import scrape_tools as st
 from src.tools import paths
 
-dir = paths.DATA/'songs'
+SONGS_DIR = paths.DATA/'songs'
 
-def pull_info(sp_url, out=True, write_path=dir):
+def pull_info(sp_url, out=True, write_path=SONGS_DIR):
     '''
         Pull all information about a song from a wikipedia 'song page'
         Inputs:
@@ -29,12 +29,12 @@ def pull_info(sp_url, out=True, write_path=dir):
     try:
         # Generate id
         song_id = st.gen_id(sp_url)
-
         # Get page html
         soup = BeautifulSoup(requests.get(st.wiki_base_url + sp_url).content, 'html.parser')
         table = soup.select('table.infobox')[0]
 
-        song_data = {'id': song_id}
+        song_data = {}
+        song_data['id'] = song_id
         song_data['title'] = table.find('tr').text.strip('"')
         song_data['url'] = sp_url
 
@@ -48,10 +48,11 @@ def pull_info(sp_url, out=True, write_path=dir):
                     if len(links)==1:
                         song_data.update({'name':row.text.split('Single by ')[1], 'url':None})
                     else:
-                        song_data['artists'] =[{'artist':artist.text,
-                                                'url':artist.attrs['href'],
-                                                'order':i}
-                                               for i, artist in enumerate(links[1:])]
+                        song_data['artists'] = [
+                            {'name': artist.text,
+                            'url': artist.attrs['href'],
+                            'order':i}
+                            for i, artist in enumerate(links[1:])]
                 # Release Date
                 elif th.text.startswith('Released'):
                     song_data.update({'release_date': st.clean_text(row.find('td').text)})
@@ -77,6 +78,7 @@ def pull_info(sp_url, out=True, write_path=dir):
             with open(write_path/f'{song_id}.json', 'w') as wfile:
                 json.dump(song_data, wfile)
 
+            # db.insert_one()
         return song_data
 
     except IndexError:
@@ -92,7 +94,7 @@ def pull_all_songs(year=None):
         for j, sp_url in df[df.single_url.notna()].single_url.iteritems():
             if st.gen_id(sp_url) not in song_idx:
                 pull_info(sp_url)
-                print(f"Downloadingn {sp_url} (id:{st.gen_id(sp_url)})")
+                print(f"Downloading {sp_url} (id:{st.gen_id(sp_url)})")
     else:
         for year_csv in tqdm((paths.TOP10).iterdir(), total=n_years ):
             df = pd.read_csv(year_csv, usecols=['single_url'])

@@ -35,7 +35,7 @@ def extract_list(td, soup):
     result_list = []
     classes = td.attrs.get('class', '')
     # ul case
-    if 'hlist-separated' in classes:
+    if 'hlist' in classes:
         for i, li in enumerate(td.find_all('li')):
             name = clean_text(li.text)
             url = li.find('a').attrs.get('href') if li.find('a') else missing_link(name, soup)
@@ -59,4 +59,3 @@ def extract_list(td, soup):
             name = clean_text(td.text)
             result_list.append({'name': name , 'url':missing_link(name, soup), 'order': 0})
     return result_list
-
