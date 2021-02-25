@@ -12,9 +12,6 @@ sys.path.append(root)
 from src.tools import paths
 from src.tools import scrape_tools as st
 
-client = MongoClient("localhost", 27017)
-
-
 def load_charts(year):
     '''Load charts for a given year'''
     fpath = paths.DATA/'wiki-top-10'/f"{year}.csv"
@@ -32,7 +29,7 @@ def load_single(single_url):
         return json.load((open(fpath)), encoding="utf-8")
 
 def refresh_db():
-    client = MongoClient("localhost", 27017)
+    client = MongoClient(paths['db']['address'], paths['db']['port'])
     db = client.musicind
     db.songs.delete_many({})
     song_paths = list(paths.SONGS.glob('*.json'))
