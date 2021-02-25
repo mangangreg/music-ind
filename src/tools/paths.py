@@ -1,9 +1,8 @@
 from pathlib import Path
 import sys
 
-here = Path.cwd().absolute()
-
-ROOT = here.parent.parent
+here = Path(__file__).resolve().parent
+ROOT = here.parents[1]
 DATA = ROOT / 'data'
 TOP10 = DATA / 'wiki-top-10'
 SONGS = DATA / 'songs'

@@ -28,10 +28,11 @@ def load_single(single_url):
     else:
         return json.load((open(fpath)), encoding="utf-8")
 
-def refresh_db():
-    client = MongoClient(paths['db']['address'], paths['db']['port'])
-    db = client.musicind
-    db.songs.delete_many({})
+
+def restart_db():
+    client = MongoClient(paths.db['address'], paths.db['port'])
+    db = client['musicind']
+    db['songs'].delete_many({})
     song_paths = list(paths.SONGS.glob('*.json'))
     for song_file in tqdm(song_paths):
         song_data = json.load((open(song_file)), encoding="utf-8")
