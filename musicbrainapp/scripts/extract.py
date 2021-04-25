@@ -22,7 +22,7 @@ def get_wiki_page(url, page_type=None):
 
     Mongo = dbtools.MongoConnect()
     Mongo.connect()
-    db = Mongo.connection['source']
+    db = Mongo.connection['landing']
 
     page_response = etools.fetch_webpage(url)
     if not page_response['_ok']:
@@ -48,7 +48,7 @@ def get_year_links():
     # Get the list of "Top 10 Singles by Year" page from the "List of Billboard Hot 100" page_id
     Mongo = dbtools.MongoConnect()
     Mongo.connect()
-    db = Mongo.connection['source']
+    db = Mongo.connection['landing']
 
     res = db.wiki_html.find_one({'page_type':'billboard100_by_year'})
     if not res:
@@ -60,3 +60,6 @@ def get_year_links():
     table = soup.select('#Top-ten_singles_by_year')[0].parent.next_sibling.next_sibling
     a_tags = table.findAll('a')
     return [ctools.wiki_base_url + link.attrs['href'] for link in a_tags]
+
+
+# def determine

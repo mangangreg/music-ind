@@ -22,7 +22,9 @@ services:
       - FLASK_APP=app/main.py
       - FLASK_DEBUG=1
       - 'RUN=flask run --host=0.0.0.0 --port=80'
+    # While still developing/debugging
     command: flask run --host=0.0.0.0 --port=80
+
   # airflow:
   #   image: apache/airflow:2.0.1
   #   ports:
