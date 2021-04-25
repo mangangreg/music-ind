@@ -7,10 +7,10 @@ from tqdm import tqdm
 
 import pandas as pd
 
-root = '../..' if Path(__file__).resolve().parent == Path.cwd() else '.'
-sys.path.append(root)
-from src.tools import paths
-from src.tools import scrape_tools as st
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from musicbrainapp.tools import paths
+from musicbrainapp.tools import extract_tools as etools
+from musicbrainapp.tools import common_tools as ctools
 
 def load_charts(year):
     '''Load charts for a given year'''
@@ -19,7 +19,7 @@ def load_charts(year):
     return df
 
 def load_single(single_url):
-    id = st.gen_id(single_url)
+    id = ctools.gen_id(single_url)
     fpath = paths.SONGS/f"{id}.json"
 
     if not fpath.exists():

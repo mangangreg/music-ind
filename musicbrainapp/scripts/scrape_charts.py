@@ -9,9 +9,9 @@ from tqdm import tqdm
 tqdm.pandas()
 from bs4 import BeautifulSoup
 
-sys.path.append('../..')
-from src.tools import scrape_tools as st
-from src.tools import paths
+sys.path.append(Path(__file__).resolve().parents[2])
+from muisicbrainapp.tools import scrape_tools as st
+from muisicbrainapp.tools import paths
 
 def get_year_links():
     # Get the list of "Top 10 Singles by Year" page from wikipedia
@@ -20,8 +20,8 @@ def get_year_links():
     a_tags = table.findAll('a')
     return [st.wiki_base_url + link.attrs['href'] for link in a_tags]
 
-dir = paths.DATA/'wiki-top-10'
-def pull_table(yp_url, out=True, write_path=dir):
+write_dir = paths.DATA/'wiki-top-10'
+def pull_table(yp_url, out=True, write_path=write_dir):
 
     def tidy_cell(cell, col=None, year=None):
         cell_text = st.clean_text(cell.text)

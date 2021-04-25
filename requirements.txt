@@ -1,3 +1,4 @@
 bs4
+click
 flask==1.1.2
 pymongo

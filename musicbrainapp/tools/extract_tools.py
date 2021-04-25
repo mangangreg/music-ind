@@ -1,16 +1,57 @@
-import hashlib
+#!/usr/bin/env python
+'''
+author: Greg Mangan
+description: Extraction tools for musicbrainapp, related to scraping
+'''
+
 import re
+import sys
 import pdb
+import hashlib
+from pathlib import Path
+
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from musicbrainapp.tools import common_tools as ctools
 
 url_list_of_lists = 'http://en.wikipedia.org/wiki/List_of_Billboard_Hot_100_top-ten_singles'
-wiki_base_url = 'http://en.wikipedia.org'
+
 
 re_citation = r"\[\d{1,3}\]"
 
-def gen_id(wiki_url):
-    ''' Generate an 8-digit id (int) for based on the unique wikipedia url'''
-    return hashlib.sha512(wiki_url.encode('utf-8')).hexdigest()[:10]
-    # return hash(wiki_url) % 10**8
+def get_page_title(html):
+    ''' Get the value of the html <title>
+
+    Inputs:
+        - html(str): the page source html string
+    Output:
+        (str) the title if found (else None)
+    '''
+    if not html:
+        return None
+
+    match = re_title.search(html)
+    if match:
+        return match.groupdict()['title']
+
+def fetch_webpage(url):
+    ''' Fetch a webpage. Return html source.
+    Inputs:
+        - url (str): the url to fetch
+
+    Output:
+        (dict) with keys: url(str), _ok(bool), html(str), title(str)
+    '''
+    output = {}
+    output['url'] = url
+    output['page_id'] = ctools.gen_id(url)
+
+    resp = requests.get(url)
+
+    output['_ok'] = resp.ok
+    output['html'] = resp.content.decode() if resp.ok else None
+    output['title'] = get_page_title(output['html'])
+
+    return output
 
 def clean_text(string):
     ''' Clean common cell text from a <td> tag '''
@@ -27,10 +68,12 @@ def missing_link(name, soup):
 
 def extract_list(td, soup):
     '''
-        Extract names and URLs from horizontal lists of hyperlinks
+    Extract names and URLs from horizontal lists of hyperlinks
 
-        Inputs:
-            td (bs4 tag)
+    Inputs:
+        td (bs4 tag)
+    Output:
+        (list of dict) with keys name(str), url(str), order(i)
     '''
     result_list = []
     classes = td.attrs.get('class', '')
