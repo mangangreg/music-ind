@@ -7,15 +7,16 @@ description: Extraction tools for musicbrainapp, related to scraping
 import re
 import sys
 import pdb
-import requests
+import hashlib
 from pathlib import Path
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-from tools import common_tools as ctools
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from musicbrainapp.tools import common_tools as ctools
 
-url_billboard100_by_year = 'http://en.wikipedia.org/wiki/List_of_Billboard_Hot_100_top-ten_singles'
+url_list_of_lists = 'http://en.wikipedia.org/wiki/List_of_Billboard_Hot_100_top-ten_singles'
+
+
 re_citation = r"\[\d{1,3}\]"
-re_title = re.compile("<title>(?P<title>[^<]+?)</title>")
 
 def get_page_title(html):
     ''' Get the value of the html <title>
@@ -51,8 +52,6 @@ def fetch_webpage(url):
     output['title'] = get_page_title(output['html'])
 
     return output
-
-
 
 def clean_text(string):
     ''' Clean common cell text from a <td> tag '''
@@ -103,7 +102,3 @@ def extract_list(td, soup):
             name = clean_text(td.text)
             result_list.append({'name': name , 'url':missing_link(name, soup), 'order': 0})
     return result_list
-
-
-
-

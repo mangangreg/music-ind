@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "musicbrainapp/schemas/pagesource.schema.json",
+  "title": "PageSource",
+  "description": "A webpage html source",
+  "type": "object",
+  "properties": {
+    "url": {
+      "type": "string",
+      "description": "The page url"
+    },
+    "html": {
+      "type": "string",
+      "description": "The page source"
+    },
+    "title": {
+      "type": "string",
+      "description": "The page title, sourced from the value between <title> and </title>"
+    },
+    "_ok": {
+      "type": "boolean",
+      "description": "whether the web server response was okay in getting the page"
+    }
+  }
+}

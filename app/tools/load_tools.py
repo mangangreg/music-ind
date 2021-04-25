@@ -3,14 +3,14 @@ import json
 from pathlib import Path
 from pymongo import MongoClient
 
-# from tqdm import tqdm
+from tqdm import tqdm
 
-# import pandas as pd
+import pandas as pd
 
-sys.path.append(str(Path(__file__).resolve().parents[1]))
-from tools import paths
-from tools import extract_tools as etools
-from tools import common_tools as ctools
+sys.path.append(str(Path(__file__).resolve().parents[2]))
+from musicbrainapp.tools import paths
+from musicbrainapp.tools import extract_tools as etools
+from musicbrainapp.tools import common_tools as ctools
 
 def load_charts(year):
     '''Load charts for a given year'''

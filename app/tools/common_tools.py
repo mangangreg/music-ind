@@ -3,8 +3,6 @@
 author: Greg Mangan
 description: Common tools across the ETL for musicbrainapp
 '''
-import hashlib
-
 wiki_base_url = 'http://en.wikipedia.org'
 
 def gen_id(url):

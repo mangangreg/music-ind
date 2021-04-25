@@ -6,7 +6,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: "admin"
       MONGO_INITDB_ROOT_PASSWORD: "${MONGO_ADMIN_PWD}"
     ports:
-      - "27018:27017"
+      - "27019:27017"
 
   musicbrain:
     build:
@@ -18,7 +18,11 @@ services:
       - 81:80
     links:
       - "db:mongohost"
-
+    environment:
+      - FLASK_APP=app/main.py
+      - FLASK_DEBUG=1
+      - 'RUN=flask run --host=0.0.0.0 --port=80'
+    command: flask run --host=0.0.0.0 --port=80
   # airflow:
   #   image: apache/airflow:2.0.1
   #   ports:

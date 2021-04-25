@@ -2,3 +2,5 @@ bs4
 click
 flask==1.1.2
 pymongo
+python-dotenv
+requests
